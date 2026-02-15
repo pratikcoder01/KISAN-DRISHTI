@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quick Setup | KISAN-DRISHTI</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700&display=swap"
+    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link href="../css/style.css" rel="stylesheet" />
+  <script src="../js/main.js"></script>
+  <script src="../js/language-selector.js"></script>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-800 dark:text-slate-100 min-h-screen">
+  <div class="fixed top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none" aria-hidden="true">
+    <div class="absolute -top-20 -left-20 w-72 h-72 bg-primary/10 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
+  </div>
+  <nav class="kd-glass sticky top-0 z-50 border-b border-slate-200/60 dark:border-slate-700/60 px-4 py-3">
+    <div class="max-w-2xl mx-auto flex items-center justify-between">
+      <a href="../index.html" class="flex items-center gap-3 text-slate-700 dark:text-slate-200 hover:text-primary kd-transition min-h-[44px] items-center">
+        <img src="../images/spit%20logo.png" alt="KISAN-DRISHTI" class="h-10 w-10 object-contain flex-shrink-0 rounded-xl" onerror="this.style.display='none'; var n=this.nextElementSibling; if(n) n.classList.remove('hidden');" />
+        <div class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white shadow-sm flex-shrink-0 hidden"><span class="material-icons text-xl">visibility</span></div>
+        <span class="font-bold text-lg">KISAN-DRISHTI</span>
+      </a>
+      <div class="flex items-center gap-3">
+        <a href="dashboard.html" class="text-sm font-medium text-primary hover:underline focus:outline-none focus:ring-2 focus:ring-primary/30 focus:ring-offset-2 rounded-lg px-3 py-2 min-h-[44px] inline-flex items-center">Skip to Dashboard</a>
+        <div class="lang-dropdown relative" id="lang-dropdown">
+          <button type="button" id="lang-trigger" class="lang-trigger kd-tap flex items-center gap-2 px-3 py-2.5 rounded-xl bg-white/90 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 text-sm font-medium min-h-[44px]" aria-haspopup="listbox" aria-expanded="false" aria-label="Select language">
+            <span class="material-icons text-lg text-slate-500 dark:text-slate-400">language</span>
+            <span id="lang-current">English</span>
+            <span class="material-icons text-slate-400 text-lg">expand_more</span>
+          </button>
+          <div id="lang-panel" class="lang-panel absolute top-full right-0 mt-2 w-full min-w-[180px] py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-xl shadow-xl z-50 hidden kd-glass" role="listbox">
+            <button type="button" class="lang-option w-full text-left px-4 py-3 flex items-center gap-2 rounded-lg mx-1.5 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-primary/10 dark:hover:bg-primary/10 hover:text-primary transition-colors" data-lang="en" role="option">English</button>
+            <button type="button" class="lang-option w-full text-left px-4 py-3 flex items-center gap-2 rounded-lg mx-1.5 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-primary/10 dark:hover:bg-primary/10 hover:text-primary transition-colors" data-lang="hi" role="option">हिंदी</button>
+            <button type="button" class="lang-option w-full text-left px-4 py-3 flex items-center gap-2 rounded-lg mx-1.5 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-primary/10 dark:hover:bg-primary/10 hover:text-primary transition-colors" data-lang="mr" role="option">मराठी</button>
+          </div>
+        </div>
+        <button onclick="toggleTheme()" class="kd-tap kd-tap-feedback w-10 h-10 flex items-center justify-center rounded-xl text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 kd-transition" title="Toggle theme" aria-label="Toggle theme">
+          <span class="material-icons text-xl">contrast</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+  <main class="w-full max-w-2xl mx-auto px-4 py-8 sm:py-12">
+    <div class="kd-glass-card rounded-2xl p-8 sm:p-12 space-y-10">
+      <header class="text-center space-y-4">
+        <div class="inline-flex items-center justify-center w-16 h-16 bg-primary/10 dark:bg-primary/20 rounded-2xl mb-2">
+          <span class="material-icons text-primary text-4xl">eco</span>
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900 dark:text-white">Welcome to KISAN-DRISHTI</h1>
+        <p class="text-lg text-slate-600 dark:text-slate-400">One-minute setup. No password. Start seeing prices right away.</p>
+      </header>
+      <div class="flex justify-center items-center gap-2" aria-label="Progress">
+        <span class="h-2 w-10 rounded-full bg-primary" aria-current="step"></span>
+        <span class="h-2 w-10 rounded-full bg-primary"></span>
+        <span class="h-2 w-10 rounded-full bg-primary"></span>
+      </div>
+      <form action="dashboard.html" method="get" class="space-y-8">
+        <div class="space-y-2">
+          <label class="block text-sm font-semibold text-slate-700 dark:text-slate-200" for="farmer-name">Your name
+            <span class="text-slate-400 font-normal">(optional)</span></label>
+          <input
+            class="input-focus w-full px-5 py-4 rounded-xl border-2 border-slate-200 dark:border-slate-600 bg-slate-50/50 dark:bg-slate-800/50 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:border-primary focus:ring-0 outline-none transition-shadow text-base"
+            id="farmer-name" name="name" placeholder="e.g. Ramesh Kumar" type="text" />
+        </div>
+        <div class="space-y-2">
+          <label class="block text-sm font-semibold text-slate-700 dark:text-slate-200" for="location">Farm
+            location</label>
+          <div class="relative">
+            <select
+              class="input-focus w-full appearance-none px-5 py-4 pr-12 rounded-xl border-2 border-slate-200 dark:border-slate-600 bg-slate-50/50 dark:bg-slate-800/50 text-slate-900 dark:text-slate-100 focus:border-primary focus:ring-0 outline-none transition-shadow text-base cursor-pointer"
+              id="location" name="location">
+              <option disabled selected value="">Select village or district</option>
+              <option value="nashik">Nashik District</option>
+              <option value="nagpur">Nagpur District</option>
+              <option value="pune">Pune District</option>
+              <option value="amravati">Amravati District</option>
+              <option value="others">Other</option>
+            </select>
+            <span
+              class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none material-icons text-slate-400">expand_more</span>
+          </div>
+        </div>
+        <div class="space-y-4">
+          <label class="block text-sm font-semibold text-slate-700 dark:text-slate-200">Preferred language</label>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <label
+              class="lang-option cursor-pointer block rounded-xl border-2 border-slate-200 dark:border-slate-600 bg-slate-50/30 dark:bg-slate-800/30 p-4 text-center">
+              <input checked class="peer sr-only" name="language" type="radio" value="english" />
+              <span class="material-icons text-3xl text-primary block mb-1">translate</span>
+              <span class="font-semibold text-slate-800 dark:text-slate-100 text-sm">English</span>
+            </label>
+            <label
+              class="lang-option cursor-pointer block rounded-xl border-2 border-slate-200 dark:border-slate-600 bg-slate-50/30 dark:bg-slate-800/30 p-4 text-center">
+              <input class="peer sr-only" name="language" type="radio" value="hindi" />
+              <span class="material-icons text-3xl text-primary block mb-1">translate</span>
+              <span class="font-semibold text-slate-800 dark:text-slate-100 text-sm">हिन्दी</span>
+            </label>
+            <label
+              class="lang-option cursor-pointer block rounded-xl border-2 border-slate-200 dark:border-slate-600 bg-slate-50/30 dark:bg-slate-800/30 p-4 text-center">
+              <input class="peer sr-only" name="language" type="radio" value="marathi" />
+              <span class="material-icons text-3xl text-primary block mb-1">translate</span>
+              <span class="font-semibold text-slate-800 dark:text-slate-100 text-sm">मराठी</span>
+            </label>
+            <label
+              class="lang-option cursor-pointer block rounded-xl border-2 border-slate-200 dark:border-slate-600 bg-slate-50/30 dark:bg-slate-800/30 p-4 text-center">
+              <input class="peer sr-only" name="language" type="radio" value="punjabi" />
+              <span class="material-icons text-3xl text-primary block mb-1">translate</span>
+              <span class="font-semibold text-slate-800 dark:text-slate-100 text-sm">ਪੰਜਾਬੀ</span>
+            </label>
+          </div>
+        </div>
+        <div class="pt-4">
+          <button
+            class="btn-submit w-full bg-primary text-white font-bold py-5 px-6 rounded-xl text-lg shadow-lg shadow-primary/25 flex items-center justify-center gap-2"
+            type="submit">
+            <span>Enter Dashboard</span>
+            <span class="material-icons">arrow_forward</span>
+          </button>
+          <p class="text-center mt-5 text-slate-500 dark:text-slate-400 text-sm flex items-center justify-center gap-2">
+            <span class="material-icons text-primary text-lg">verified_user</span>
+            Your data is safe. We value your privacy.
+          </p>
+        </div>
+      </form>
+    </div>
+    <div class="mt-10 flex justify-center gap-6 opacity-50">
+      <img class="w-14 h-14 rounded-2xl object-cover shadow-sm" alt=""
+        src="https://lh3.googleusercontent.com/aida-public/AB6AXuAdxWIKEKcL9ztnIOjKKP5tjqghsT59z-clSnI4__XmEvBj5LTHzPz-DTMjeJf8Ufp5Ss70Y6g2tijGztqOdd02pPrNAY1cEDwUX7M2yQl4L6kI8fmIXMKqO4OkotQDnO-6nlXdAnIl5wZ8VHFJBWnr21DmKX2slfN3LpE6jqa53oG9MS8xBJvRED9ZnzxQ2i7X_iLZX8x-I_M_KHLQWdd4z1exv79_-TJz283VVgkf35pWN_d1fjg-iLj8JEVhVgR17HVwAFaRXd9A"
+        role="presentation" />
+      <img class="w-14 h-14 rounded-2xl object-cover shadow-sm" alt=""
+        src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6p38udPWOmsPjh7PDeJFU2PsKOLZqwgfoX17eTko00OW_hedQVUG0ay0-NGFLMh3wAtVI0Lz6ruEiXo01MnXXATnzAfHr5J323mxskWhjXLYflFuX8mPwCZI1gwPN5pQJQA6g6X0TFmld-_JtyLdKqfdoZXtHIi8yUlp0WbVsS85y30xhiWpVlNQMKGT7rhcNKJcpVqMkuSgbrVsR0eDA67DTIZghUW00DjwmnX39Cp8CAfKMuyZCuu_OzKLu3lfFoJQwa6KQFgPk"
+        role="presentation" />
+      <img class="w-14 h-14 rounded-2xl object-cover shadow-sm" alt=""
+        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDWohuAOxGRaE4qPhTU5uCfiI5mmuaLENVCuQ1UHntKa41emXjJ26iABWLoY_Zw7lR3UPXdnQMAPWmi5Y_qYkLwYRzDXsGl3yDE6JrjGGLeBGmA9mBa0ful_FW1FrwE6YrcpEwtnf_i3ryd_L1OvnbIMYhAJSffEPGSSqXSB6q5AkbtQCZBSTyFa8xnyHr56S4y3yP8KtN-Y9EBKOWfq3CPuOahLwoAkAUpHZqAf6z_9q4ylfJVA-yDKVxpGPltaqQ_C2bmKArcLmdR"
+        role="presentation" />
+    </div>
+  </main>
+</body>
+
+</html>

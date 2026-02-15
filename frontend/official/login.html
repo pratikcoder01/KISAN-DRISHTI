@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Official Secure Entry | KISAN-DRISHTI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="../css/style.css" rel="stylesheet" />
+  <script src="../js/main.js"></script>
+</head>
+
+<body class="bg-admin dark:bg-background-dark min-h-screen flex items-center justify-center p-4 font-display text-slate-800 dark:text-slate-100">
+  <div class="absolute top-4 right-4 z-10">
+    <button onclick="toggleTheme()" class="kd-tap kd-tap-feedback w-11 h-11 flex items-center justify-center rounded-xl kd-glass text-slate-500 hover:text-primary kd-transition" title="Toggle theme" aria-label="Toggle theme">
+      <span class="material-icons text-xl">contrast</span>
+    </button>
+  </div>
+  <div class="w-full max-w-md">
+    <div class="text-center mb-8">
+      <div class="flex items-center justify-center gap-3 mb-3">
+        <img src="../images/spit%20logo.png" alt="KISAN-DRISHTI" class="h-12 w-12 object-contain rounded-xl" onerror="this.style.display='none'; var n=this.nextElementSibling; if(n) n.classList.remove('hidden');" />
+        <div class="w-12 h-12 bg-primary rounded-xl flex items-center justify-center text-white shadow-lg shadow-primary/25 hidden"><span class="material-icons text-2xl">visibility</span></div>
+        <h1 class="text-2xl font-bold tracking-tight text-slate-800 dark:text-white">KISAN-DRISHTI</h1>
+      </div>
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-full">
+        <span class="material-icons text-sm text-slate-500 dark:text-slate-400">shield</span>
+        <span class="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">Official
+          Portal</span>
+      </div>
+    </div>
+    <div class="kd-glass-card rounded-2xl overflow-hidden">
+      <div class="h-1 bg-primary" aria-hidden="true"></div>
+      <div class="p-8">
+        <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-1">Secure Entry</h2>
+        <p class="text-slate-500 dark:text-slate-400 text-sm mb-6">Authorized market personnel only.</p>
+    <form action="dashboard.html" method="get" class="space-y-5">
+      <div>
+        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-200 mb-2" for="market-id">Official
+          Market ID</label>
+        <div class="relative">
+          <span class="material-icons absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl">badge</span>
+          <input
+            class="input-focus w-full pl-12 pr-4 py-3.5 bg-slate-50/50 dark:bg-slate-800/50 border-2 border-slate-200 dark:border-slate-600 rounded-xl focus:ring-0 focus:border-primary outline-none text-slate-900 dark:text-white placeholder:text-slate-400 transition-shadow"
+            id="market-id" name="id" placeholder="e.g. MKT-8829" type="text" />
+        </div>
+      </div>
+      <div>
+        <div class="flex items-center justify-between mb-2">
+          <label class="block text-sm font-semibold text-slate-700 dark:text-slate-200" for="passcode">Passcode</label>
+          <a class="text-xs text-primary font-semibold hover:underline focus:outline-none focus:ring-2 focus:ring-primary/30 rounded"
+            href="#">Forgot?</a>
+        </div>
+        <div class="relative">
+          <span class="material-icons absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl">lock</span>
+          <input
+            class="input-focus w-full pl-12 pr-12 py-3.5 bg-slate-50/50 dark:bg-slate-800/50 border-2 border-slate-200 dark:border-slate-600 rounded-xl focus:ring-0 focus:border-primary outline-none text-slate-900 dark:text-white placeholder:text-slate-400 transition-shadow"
+            id="passcode" name="passcode" placeholder="••••" type="password" />
+          <button
+            class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 rounded focus:outline-none focus:ring-2 focus:ring-primary/30"
+            type="button" aria-label="Toggle password visibility"><span
+              class="material-icons text-xl">visibility_off</span></button>
+        </div>
+      </div>
+      <div class="bg-primary/5 dark:bg-primary/10 border border-primary/20 rounded-xl p-4 flex gap-3">
+        <span class="material-icons text-primary text-lg shrink-0 mt-0.5">info</span>
+        <p class="text-xs leading-relaxed text-slate-600 dark:text-slate-400">Your session will be logged under the
+          official market auditing protocol.</p>
+      </div>
+      <button
+        class="btn-enter w-full bg-primary text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/25 flex items-center justify-center gap-2 focus:outline-none focus:ring-4 focus:ring-primary/30"
+        type="submit">
+        <span>Authorize &amp; Enter</span>
+        <span class="material-icons text-xl">arrow_forward</span>
+      </button>
+    </form>
+      </div>
+      <div class="bg-slate-50/80 dark:bg-slate-800/50 px-8 py-4 border-t border-slate-200 dark:border-slate-700 flex justify-center">
+        <a class="text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-primary transition-colors flex items-center gap-2" href="../index.html">
+          <span class="material-icons text-lg">agriculture</span>Switch to Farmer View
+        </a>
+      </div>
+    </div>
+  <div class="mt-10 flex justify-center items-center gap-6 opacity-50">
+    <img class="h-9 object-contain" alt=""
+      src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7CGOrww9gTqdqbmkLHbmpMPzPY70lw16Iw2N1m5rCrvGasGJfuv_4G5f7mwsMTVxunRwUHmG2vM0RrOG_9tdLJ1ikvFO2yFTQYhCEMDnG0AU4oiJ8NIyk8OmSw9nitzH1kevuuEgOvntavyjCtgAAqsDR9Fm3WXo7SjEFPTydCRxa0huuf3OHUSCVPeDQ3D4VapEQtN3-4Q7YU0sxAsaWDWYyVfLLtgWo3V5xPi-SJbABF7Hwhq2AsCuZY2a2G4ElVD_LqOfbN0i9"
+      role="presentation" />
+    <div class="h-6 w-px bg-slate-300 dark:bg-slate-600"></div>
+    <img class="h-7 object-contain" alt=""
+      src="https://lh3.googleusercontent.com/aida-public/AB6AXuA4tPspFY_rBqIMI4JRHEajileeFbNBoZcRUG9iyJxe_fY1ap7xj6bXu3t521PnSo31YB5pYvi_SdUy64fqcoFR_7Dr26cVoDbaGImYR34FxZLww4ce1soZwo7Ty82vd5MBbViGy3xfPeA8aAJzhvViPgQC_r4pZY4evHfuNm5hEVUD6CJKFbLn7ERWFOXjl9gRbIAAmJXg5D2-KLATb_GFXb_cwFG00sVcef5zVKHX04AHvAoGQD9qM1PmmjmW-aX6-2HTPEDOzWht"
+      role="presentation" />
+  </div>
+  <p class="mt-6 text-center text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider">System 2.4.1 · © 2024 National Agricultural Infrastructure Board</p>
+  </div>
+</body>
+
+</html>

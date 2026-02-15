@@ -1,0 +1,342 @@
+// prisma/schema.prisma
+// KISAN-DRISHTI Database Schema
+// Smart Agricultural Market Intelligence Platform
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ================================
+// USER MANAGEMENT
+// ================================
+
+enum UserRole {
+  farmer
+  admin
+}
+
+model User {
+  id        String   @id @default(uuid())
+  role      UserRole
+  
+  // Farmer identification (device-based, accessible)
+  deviceId  String?  @unique @map("device_id")
+  
+  // Admin identification (credential-based)
+  email     String?  @unique
+  password  String?  @map("password_hash")
+  
+  // Profile
+  name      String?
+  phone     String?
+  language  String   @default("en") // 'en', 'hi', 'mr'
+  
+  // Location (for farmers)
+  locationLat      Float?  @map("location_lat")
+  locationLng      Float?  @map("location_lng")
+  preferredMandiId String? @map("preferred_mandi_id")
+  
+  // Status
+  isActive      Boolean   @default(true) @map("is_active")
+  isVerified    Boolean   @default(false) @map("is_verified") // Phone verified
+  lastLoginAt   DateTime? @map("last_login_at")
+  
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  
+  // Relations
+  preferredMandi Mandi?         @relation(fields: [preferredMandiId], references: [id])
+  sessions       UserSession[]
+  priceUpdates   Price[]
+  auditLogs      AuditLog[]
+  notifications  Notification[]
+  
+  @@index([deviceId])
+  @@index([email])
+  @@index([role])
+  @@index([isActive])
+  @@map("users")
+}
+
+model UserSession {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  tokenHash String   @unique @map("token_hash")
+  deviceInfo Json?   @map("device_info")
+  ipAddress String?  @map("ip_address")
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@index([tokenHash])
+  @@index([expiresAt])
+  @@map("user_sessions")
+}
+
+// ================================
+// CROP & PRICE DATA
+// ================================
+
+model Crop {
+  id       String  @id @default(uuid())
+  code     String  @unique // 'wheat', 'onion', 'rice'
+  emoji    String?
+  
+  // Multilingual names
+  nameEn   String  @map("name_en")
+  nameHi   String? @map("name_hi")
+  nameMr   String? @map("name_mr")
+  
+  // Categorization
+  category String? // 'grain', 'vegetable', 'cash_crop', 'pulse'
+  
+  // Status
+  isActive Boolean @default(true) @map("is_active")
+  
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  
+  // Relations
+  prices        Price[]
+  priceHistory  PriceHistory[]
+  notifications Notification[]
+  
+  @@index([code])
+  @@index([isActive])
+  @@map("crops")
+}
+
+enum TrendDirection {
+  up
+  down
+  stable
+}
+
+enum Volatility {
+  low
+  medium
+  high
+}
+
+enum Suggestion {
+  sell_today
+  wait_2_days
+  wait_3_days
+  hold
+}
+
+model Price {
+  id      String @id @default(uuid())
+  cropId  String @map("crop_id")
+  mandiId String? @map("mandi_id")
+  
+  // Price data (INR per quintal)
+  price    Float
+  minPrice Float? @map("min_price") // Daily low
+  maxPrice Float? @map("max_price") // Daily high
+  
+  // Market intelligence
+  trendDirection TrendDirection? @map("trend_direction")
+  trendAmount    Float?          @map("trend_amount")
+  volatility     Volatility?
+  
+  // Advisory
+  suggestion      Suggestion?
+  confidenceScore Float?      @map("confidence_score") // 0.00 to 1.00
+  
+  // Validity period
+  validFrom  DateTime  @map("valid_from")
+  validUntil DateTime? @map("valid_until")
+  
+  // Audit
+  updatedBy String?  @map("updated_by")
+  updatedAt DateTime @default(now()) @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  
+  // Relations
+  crop      Crop   @relation(fields: [cropId], references: [id], onDelete: Cascade)
+  mandi     Mandi? @relation(fields: [mandiId], references: [id])
+  updater   User?  @relation(fields: [updatedBy], references: [id])
+  
+  @@index([cropId, mandiId])
+  @@index([validFrom(sort: Desc)])
+  @@index([cropId, validFrom(sort: Desc)])
+  @@map("prices")
+}
+
+model PriceHistory {
+  id         String   @id @default(uuid())
+  cropId     String   @map("crop_id")
+  mandiId    String?  @map("mandi_id")
+  price      Float
+  recordedAt DateTime @map("recorded_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+  
+  crop Crop @relation(fields: [cropId], references: [id], onDelete: Cascade)
+  
+  @@index([cropId, recordedAt(sort: Desc)])
+  @@index([recordedAt(sort: Desc)])
+  @@map("price_history")
+}
+
+// ================================
+// MANDI (MARKET) DATA
+// ================================
+
+model Mandi {
+  id      String @id @default(uuid())
+  
+  // Location
+  name     String
+  nameHi   String? @map("name_hi")
+  nameMr   String? @map("name_mr")
+  address  String?
+  city     String?
+  state    String?
+  pincode  String?
+  latitude Float
+  longitude Float
+  
+  // Contact
+  phone         String? @map("phone")
+  email         String?
+  contactPerson String? @map("contact_person")
+  
+  // Operations
+  openingTime   String? @map("opening_time") // HH:MM format
+  closingTime   String? @map("closing_time")
+  operatingDays String? @map("operating_days") // 'Mon-Sat', 'Daily'
+  
+  // Specialization
+  specializesIn String[] @map("specializes_in") // Array of crop codes
+  
+  // Features
+  hasColdStorage    Boolean @default(false) @map("has_cold_storage")
+  hasQualityTesting Boolean @default(false) @map("has_quality_testing")
+  hasOnlineAuction  Boolean @default(false) @map("has_online_auction")
+  
+  // Status
+  isActive Boolean @default(true) @map("is_active")
+  
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  
+  // Relations
+  prices            Price[]
+  preferredByUsers  User[]
+  
+  @@index([latitude, longitude])
+  @@index([pincode])
+  @@index([isActive])
+  @@map("mandis")
+}
+
+// ================================
+// AUDIT & NOTIFICATIONS
+// ================================
+
+model AuditLog {
+  id     String @id @default(uuid())
+  
+  // Actor
+  userId   String  @map("user_id")
+  userRole String? @map("user_role")
+  
+  // Action
+  action     String  // 'price_update', 'crop_create', 'user_login'
+  entityType String? @map("entity_type") // 'price', 'crop', 'user'
+  entityId   String? @map("entity_id")
+  
+  // Details
+  changes  Json? // Before/after snapshots
+  metadata Json? // IP, user-agent, device info
+  
+  // Timestamp
+  createdAt DateTime @default(now()) @map("created_at")
+  
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([entityType, entityId])
+  @@index([action])
+  @@map("audit_logs")
+}
+
+enum NotificationType {
+  price_alert
+  price_surge
+  price_drop
+  advisory
+  system
+  broadcast
+}
+
+model Notification {
+  id     String           @id @default(uuid())
+  userId String?          @map("user_id") // NULL = broadcast to all
+  
+  // Content
+  type      NotificationType
+  title     String
+  message   String?
+  titleHi   String?          @map("title_hi")
+  messageHi String?          @map("message_hi")
+  titleMr   String?          @map("title_mr")
+  messageMr String?          @map("message_mr")
+  
+  // Related entities
+  cropId  String? @map("crop_id")
+  mandiId String? @map("mandi_id")
+  
+  // State
+  isRead Boolean   @default(false) @map("is_read")
+  readAt DateTime? @map("read_at")
+  
+  // Metadata
+  createdAt DateTime @default(now()) @map("created_at")
+  
+  // Relations
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+  crop Crop? @relation(fields: [cropId], references: [id])
+  
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([userId, isRead])
+  @@map("notifications")
+}
+
+// ================================
+// USER ACTIVITY STATS
+// ================================
+
+model UserActivity {
+  id              String   @id @default(uuid())
+  userId          String   @map("user_id")
+  
+  // Counters
+  searchCount     Int      @default(0) @map("search_count")
+  voiceQueryCount Int      @default(0) @map("voice_query_count")
+  calculatorUsage Int      @default(0) @map("calculator_usage")
+  mandiSearches   Int      @default(0) @map("mandi_searches")
+  
+  // Streaks
+  loginStreak     Int      @default(0) @map("login_streak")
+  lastActiveDate  DateTime @map("last_active_date")
+  
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  
+  @@unique([userId])
+  @@map("user_activities")
+}

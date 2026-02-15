@@ -1,0 +1,159 @@
+# docker/docker-compose.yml
+# KISAN-DRISHTI Backend - Full Stack Docker Setup
+
+version: '3.8'
+
+services:
+  # ================================
+  # PostgreSQL Database
+  # ================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: kisan-postgres
+    environment:
+      POSTGRES_DB: kisan_drishti
+      POSTGRES_USER: kisan_user
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-ChangeMeInProduction123}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=en_US.UTF-8"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    networks:
+      - kisan-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kisan_user -d kisan_drishti"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+  # ================================
+  # Redis Cache
+  # ================================
+  redis:
+    image: redis:7-alpine
+    container_name: kisan-redis
+    command: >
+      redis-server
+      --appendonly yes
+      --appendfsync everysec
+      --maxmemory 512mb
+      --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    networks:
+      - kisan-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+    restart: unless-stopped
+
+  # ================================
+  # Backend API Server
+  # ================================
+  backend:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      args:
+        NODE_ENV: ${NODE_ENV:-production}
+    container_name: kisan-backend
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      PORT: 3000
+      DATABASE_URL: postgresql://kisan_user:${DB_PASSWORD:-ChangeMeInProduction123}@postgres:5432/kisan_drishti
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: ${JWT_SECRET:-your-super-secret-jwt-key-min-32-chars}
+      SESSION_SECRET: ${SESSION_SECRET:-your-session-secret-key}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:8080,http://localhost:3001}
+      
+      # Features
+      ENABLE_WEBSOCKET: ${ENABLE_WEBSOCKET:-true}
+      ENABLE_VOICE: ${ENABLE_VOICE:-true}
+      ENABLE_AUDIT_LOGS: ${ENABLE_AUDIT_LOGS:-true}
+      
+      # Logging
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      LOG_FILE_PATH: /app/logs/
+      
+      # Admin defaults
+      DEFAULT_ADMIN_EMAIL: ${DEFAULT_ADMIN_EMAIL:-admin@kisan-drishti.gov.in}
+      DEFAULT_ADMIN_PASSWORD: ${DEFAULT_ADMIN_PASSWORD:-ChangeMeInProduction!123}
+    ports:
+      - "${API_PORT:-3000}:3000"
+    volumes:
+      - backend_logs:/app/logs
+      - backend_uploads:/app/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - kisan-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+
+  # ================================
+  # Nginx Reverse Proxy (Optional)
+  # ================================
+  nginx:
+    image: nginx:alpine
+    container_name: kisan-nginx
+    ports:
+      - "${NGINX_HTTP_PORT:-80}:80"
+      - "${NGINX_HTTPS_PORT:-443}:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+      - nginx_cache:/var/cache/nginx
+    depends_on:
+      - backend
+    networks:
+      - kisan-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    profiles:
+      - with-nginx
+
+# ================================
+# Volumes
+# ================================
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  backend_logs:
+    driver: local
+  backend_uploads:
+    driver: local
+  nginx_cache:
+    driver: local
+
+# ================================
+# Networks
+# ================================
+networks:
+  kisan-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16

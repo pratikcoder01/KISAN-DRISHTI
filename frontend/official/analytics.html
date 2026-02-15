@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Market Analytics | KISAN-DRISHTI Official</title>
+  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="../css/style.css" rel="stylesheet" />
+  <script src="../js/main.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-800 dark:text-slate-100 font-display min-h-screen">
+  <nav class="fixed left-0 top-0 h-full w-20 bg-white/95 dark:bg-slate-900/95 backdrop-blur border-r border-slate-200/80 dark:border-primary/20 flex flex-col items-center py-8 gap-6 z-50">
+    <a href="../index.html" class="w-12 h-12 flex items-center justify-center rounded-xl overflow-hidden bg-primary shadow-lg shadow-primary/25 hover:opacity-90 transition-opacity" aria-label="Home"><img src="../images/spit%20logo.png" alt="KISAN-DRISHTI" class="h-12 w-12 object-contain" onerror="this.style.display='none'; var n=this.nextElementSibling; if(n) n.classList.remove('hidden');" /><span class="material-icons text-white text-2xl hidden">agriculture</span></a>
+    <div class="flex flex-col gap-4">
+      <a href="dashboard.html" class="w-12 h-12 flex items-center justify-center text-slate-400 hover:text-primary transition-colors" title="Price Management"><span class="material-icons">monetization_on</span></a>
+      <a href="analytics.html" class="w-12 h-12 flex items-center justify-center bg-primary/10 text-primary rounded-xl" title="Analytics"><span class="material-icons">analytics</span></a>
+      <a href="support.html" class="w-12 h-12 flex items-center justify-center text-slate-400 hover:text-primary transition-colors" title="Support"><span class="material-icons">support_agent</span></a>
+    </div>
+  </nav>
+  <main class="ml-20 p-6 lg:p-8">
+    <header class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+      <div>
+        <h1 class="text-3xl font-bold text-slate-900 dark:text-white">Market Analytics</h1>
+        <p class="text-slate-500 dark:text-slate-400 mt-1">Real-time and historical crop performance across mandis.</p>
+      </div>
+      <div class="flex items-center gap-3 flex-wrap">
+        <select id="lang-dropdown" onchange="if(typeof setLanguage==='function'){ setLanguage(this.value); if(typeof updateAllTexts==='function') updateAllTexts(); }" class="px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-white text-sm font-medium focus:ring-2 focus:ring-primary/20" aria-label="Language">
+          <option value="en">English</option>
+          <option value="hi">हिंदी</option>
+          <option value="mr">मराठी</option>
+        </select>
+        <button onclick="toggleTheme()" class="w-10 h-10 flex items-center justify-center rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 hover:text-primary transition-colors" title="Toggle Theme">
+          <span class="material-icons text-xl">contrast</span>
+        </button>
+        <div class="flex bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-1">
+          <button id="tabRealtime" class="px-4 py-2 rounded-lg bg-primary text-white font-medium text-sm">Real-time</button>
+          <button id="tabHistorical" class="px-4 py-2 rounded-lg text-slate-500 dark:text-slate-400 font-medium text-sm hover:text-primary">Historical</button>
+        </div>
+        <button class="flex items-center gap-2 px-4 py-2.5 bg-primary/10 text-primary border border-primary/20 rounded-xl font-semibold hover:bg-primary/20 transition-all">
+          <span class="material-icons text-sm">download</span>Export PDF
+        </button>
+      </div>
+    </header>
+
+    <!-- Filters -->
+    <div class="bg-white dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-700 p-4 mb-8 flex flex-wrap items-center gap-4">
+      <span class="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Filters</span>
+      <select class="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-lg text-sm px-4 py-2 text-slate-800 dark:text-white focus:ring-2 focus:ring-primary/20">
+        <option>All Districts</option>
+        <option>Western Zone</option>
+        <option>Central Belt</option>
+      </select>
+      <select class="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-lg text-sm px-4 py-2 text-slate-800 dark:text-white focus:ring-2 focus:ring-primary/20">
+        <option>Last 7 Days</option>
+        <option>Last 30 Days</option>
+        <option>Last Quarter</option>
+        <option>Crop Cycle 2024</option>
+      </select>
+      <span class="px-3 py-1 bg-primary/20 text-primary text-xs font-bold rounded-full border border-primary/30">Live</span>
+    </div>
+
+    <!-- KPI row -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div class="bg-white dark:bg-slate-900/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+        <p class="text-sm font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Price Trend (7d)</p>
+        <p class="text-3xl font-bold text-primary flex items-center gap-2">+4.2% <span class="material-icons text-primary">trending_up</span></p>
+        <p class="text-xs text-slate-400 mt-1">Wheat, Onion, Pulses</p>
+      </div>
+      <div class="bg-white dark:bg-slate-900/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+        <p class="text-sm font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Active Mandis</p>
+        <p class="text-3xl font-bold text-slate-800 dark:text-white">48</p>
+        <p class="text-xs text-slate-400 mt-1">Reporting this week</p>
+      </div>
+      <div class="bg-white dark:bg-slate-900/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+        <p class="text-sm font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Avg. Commodity Rate</p>
+        <p class="text-3xl font-bold text-slate-800 dark:text-white">₹2,180</p>
+        <p class="text-xs text-slate-400 mt-1">Per quintal (all crops)</p>
+      </div>
+    </div>
+
+    <!-- Charts row 1: Line + Doughnut -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+      <div class="bg-white dark:bg-slate-900/50 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm">
+        <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-6 flex items-center gap-2">
+          <span class="material-icons text-primary">show_chart</span>Commodity Price Trend (₹/quintal)
+        </h3>
+        <div class="h-72">
+          <canvas id="priceTrendChart"></canvas>
+        </div>
+      </div>
+      <div class="bg-white dark:bg-slate-900/50 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm">
+        <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-6 flex items-center gap-2">
+          <span class="material-icons text-primary">pie_chart</span>Top Commodities by Volume
+        </h3>
+        <div class="h-72 flex items-center justify-center">
+          <canvas id="volumeChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts row 2: Bar (Mandi-wise) -->
+    <div class="grid grid-cols-1 gap-8">
+      <div class="bg-white dark:bg-slate-900/50 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm">
+        <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-6 flex items-center gap-2">
+          <span class="material-icons text-primary">bar_chart</span>Mandi-wise Average Price (₹/quintal)
+        </h3>
+        <div class="h-80">
+          <canvas id="mandiChart"></canvas>
+        </div>
+      </div>
+      <div class="bg-white dark:bg-slate-900/50 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm">
+        <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-6 flex items-center gap-2">
+          <span class="material-icons text-primary">timeline</span>Daily Arrivals vs Price Index
+        </h3>
+        <div class="h-72">
+          <canvas id="arrivalsChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script>
+(function() {
+  const isDark = document.documentElement.classList.contains('dark');
+  const grid = isDark ? 'rgba(148,163,184,0.15)' : 'rgba(0,0,0,0.06)';
+  const text = isDark ? '#94a3b8' : '#64748b';
+  const primary = '#0d5c0d';
+  const colors = [primary, '#0ea5e9', '#b45309', '#8b5cf6', '#dc2626', '#64748b'];
+
+  // 1. Price trend line chart
+  new Chart(document.getElementById('priceTrendChart'), {
+    type: 'line',
+    data: {
+      labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      datasets: [
+        { label: 'Wheat', data: [2380, 2400, 2420, 2410, 2440, 2450, 2450], borderColor: primary, backgroundColor: 'rgba(13,92,13,0.15)', fill: true, tension: 0.35 },
+        { label: 'Onion', data: [1850, 1820, 1800, 1790, 1810, 1800, 1800], borderColor: '#b45309', backgroundColor: 'rgba(180,83,9,0.15)', fill: true, tension: 0.35 },
+        { label: 'Rice', data: [3100, 3120, 3150, 3180, 3200, 3200, 3200], borderColor: '#0ea5e9', backgroundColor: 'rgba(14,165,233,0.15)', fill: true, tension: 0.35 },
+        { label: 'Pulses', data: [4600, 4720, 4780, 4800, 4820, 4800, 4800], borderColor: '#8b5cf6', backgroundColor: 'rgba(139,92,246,0.15)', fill: true, tension: 0.35 }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: text } } },
+      scales: { x: { grid: { color: grid }, ticks: { color: text } }, y: { grid: { color: grid }, ticks: { color: text } }
+    }
+  });
+
+  // 2. Doughnut – commodities by volume
+  new Chart(document.getElementById('volumeChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Wheat', 'Onion', 'Rice', 'Pulses', 'Corn', 'Others'],
+      datasets: [{ data: [32, 24, 18, 14, 8, 4], backgroundColor: colors, borderWidth: 2, borderColor: isDark ? '#1e293b' : '#fff' }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { position: 'right', labels: { color: text, padding: 16 } } }
+    }
+  });
+
+  // 3. Bar – mandi-wise average price
+  new Chart(document.getElementById('mandiChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Azadpur', 'Nashik APMC', 'Indore', 'Chandigarh', 'Pune', 'Bhopal'],
+      datasets: [
+        { label: 'Avg ₹/q', data: [2480, 2350, 2210, 3180, 2290, 2140], backgroundColor: [primary, 'rgba(13,92,13,0.85)', 'rgba(13,92,13,0.7)', 'rgba(13,92,13,0.85)', 'rgba(13,92,13,0.65)', 'rgba(13,92,13,0.55)'], borderRadius: 6 }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: grid }, ticks: { color: text } },
+        y: { grid: { color: grid }, ticks: { color: text } }
+      }
+    }
+  });
+
+  // 4. Mixed: arrivals (bar) + price index (line)
+  new Chart(document.getElementById('arrivalsChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      datasets: [
+        { label: 'Arrivals (qty)', type: 'bar', data: [420, 380, 450, 410, 390, 360, 340], backgroundColor: 'rgba(13,92,13,0.4)', borderRadius: 6, yAxisID: 'y' },
+        { label: 'Price Index', type: 'line', data: [98, 99, 100, 101, 102, 102, 103], borderColor: '#b45309', backgroundColor: 'transparent', fill: false, tension: 0.35, yAxisID: 'y1' }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: text } } },
+      scales: {
+        x: { grid: { color: grid }, ticks: { color: text } },
+        y: { type: 'linear', position: 'left', grid: { color: grid }, ticks: { color: text } },
+        y1: { type: 'linear', position: 'right', grid: { drawOnChartArea: false }, ticks: { color: text } }
+      }
+    }
+  });
+})();
+  </script>
+</body>
+</html>

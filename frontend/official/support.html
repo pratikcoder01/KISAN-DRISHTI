@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Support &amp; Reports | KISAN-DRISHTI Official</title>
+  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="../css/style.css" rel="stylesheet" />
+  <script src="../js/main.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-800 dark:text-slate-100 font-display min-h-screen">
+  <nav class="fixed left-0 top-0 h-full w-20 bg-white/95 dark:bg-slate-900/95 backdrop-blur border-r border-slate-200/80 dark:border-primary/20 flex flex-col items-center py-8 gap-6 z-50">
+    <a href="../index.html" class="w-12 h-12 flex items-center justify-center rounded-xl overflow-hidden bg-primary shadow-lg shadow-primary/25 hover:opacity-90 transition-opacity" aria-label="Home"><img src="../images/spit%20logo.png" alt="KISAN-DRISHTI" class="h-12 w-12 object-contain" onerror="this.style.display='none'; var n=this.nextElementSibling; if(n) n.classList.remove('hidden');" /><span class="material-icons text-white text-2xl hidden">agriculture</span></a>
+    <div class="flex flex-col gap-4">
+      <a href="dashboard.html" class="w-12 h-12 flex items-center justify-center text-slate-400 hover:text-primary transition-colors" title="Price Management"><span class="material-icons">monetization_on</span></a>
+      <a href="analytics.html" class="w-12 h-12 flex items-center justify-center text-slate-400 hover:text-primary transition-colors" title="Analytics"><span class="material-icons">analytics</span></a>
+      <a href="support.html" class="w-12 h-12 flex items-center justify-center bg-primary/10 text-primary rounded-xl" title="Support"><span class="material-icons">support_agent</span></a>
+    </div>
+  </nav>
+  <main class="ml-20 p-6 lg:p-8">
+    <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+      <div>
+        <h1 class="text-3xl font-bold text-slate-900 dark:text-white">Support &amp; Voice Reports</h1>
+        <p class="text-slate-500 dark:text-slate-400 mt-1">Review and resolve farmer queries submitted via voice.</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <select id="lang-dropdown" onchange="if(typeof setLanguage==='function'){ setLanguage(this.value); if(typeof updateAllTexts==='function') updateAllTexts(); }" class="px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-white text-sm font-medium focus:ring-2 focus:ring-primary/20" aria-label="Language">
+          <option value="en">English</option>
+          <option value="hi">हिंदी</option>
+          <option value="mr">मराठी</option>
+        </select>
+        <button onclick="toggleTheme()" class="w-10 h-10 flex items-center justify-center rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 hover:text-primary transition-colors shadow-sm" title="Toggle Theme">
+          <span class="material-icons text-xl">contrast</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- KPI cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div class="bg-white dark:bg-slate-900/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Total Reports</p>
+          <h3 class="text-3xl font-bold mt-1 text-slate-900 dark:text-white">128</h3>
+        </div>
+        <div class="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center text-primary"><span class="material-icons text-3xl">analytics</span></div>
+      </div>
+      <div class="bg-white dark:bg-slate-900/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Pending Action</p>
+          <h3 class="text-3xl font-bold mt-1 text-amber-500 dark:text-amber-400">24</h3>
+        </div>
+        <div class="w-14 h-14 bg-amber-100 dark:bg-amber-500/20 rounded-2xl flex items-center justify-center text-amber-500"><span class="material-icons text-3xl">pending_actions</span></div>
+      </div>
+      <div class="bg-white dark:bg-slate-900/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Resolved (7 Days)</p>
+          <h3 class="text-3xl font-bold mt-1 text-primary">104</h3>
+        </div>
+        <div class="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center text-primary"><span class="material-icons text-3xl">check_circle</span></div>
+      </div>
+    </div>
+
+    <!-- Reports trend chart -->
+    <div class="bg-white dark:bg-slate-900/50 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm mb-8">
+      <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
+        <span class="material-icons text-primary">insights</span>Reports Trend (Last 7 Days)
+      </h3>
+      <div class="h-64">
+        <canvas id="reportsTrendChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Reports list -->
+    <div class="bg-white dark:bg-slate-900/50 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm">
+      <div class="p-4 border-b border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row gap-4 sm:items-center justify-between">
+        <div class="relative w-full sm:w-96">
+          <span class="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
+          <input class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-600 focus:ring-2 focus:ring-primary/20 focus:border-primary text-slate-800 dark:text-white placeholder-slate-400 text-sm" placeholder="Search by farmer name or report ID..." type="text" />
+        </div>
+        <div class="flex items-center gap-3">
+          <button class="flex items-center gap-2 px-4 py-2.5 bg-primary text-white text-sm font-medium rounded-xl hover:opacity-90 transition-opacity">All Regions</button>
+          <button class="flex items-center gap-2 px-4 py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-sm font-medium rounded-xl hover:text-primary transition-colors">Recent First</button>
+        </div>
+      </div>
+      <div class="divide-y divide-slate-200 dark:divide-slate-700">
+        <div class="p-6 hover:bg-primary/5 dark:hover:bg-primary/10 transition-colors flex flex-wrap items-center justify-between gap-4">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary"><span class="material-icons">mic</span></div>
+            <div>
+              <p class="font-bold text-slate-800 dark:text-white">Report #R-2841</p>
+              <p class="text-sm text-slate-500 dark:text-slate-400">Suresh K. • Nashik • 2 hours ago</p>
+              <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Voice query: "What is today's onion rate at Nashik mandi?"</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="px-3 py-1 bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-400 text-xs font-bold rounded-full">Pending</span>
+            <button class="px-4 py-2 bg-primary text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-opacity">Resolve</button>
+          </div>
+        </div>
+        <div class="p-6 hover:bg-primary/5 dark:hover:bg-primary/10 transition-colors flex flex-wrap items-center justify-between gap-4">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary"><span class="material-icons">mic</span></div>
+            <div>
+              <p class="font-bold text-slate-800 dark:text-white">Report #R-2839</p>
+              <p class="text-sm text-slate-500 dark:text-slate-400">Ramesh Kumar • Karnal • 5 hours ago</p>
+              <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Voice query: "Wheat price and nearest mandi for selling."</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="px-3 py-1 bg-primary/10 text-primary text-xs font-bold rounded-full">Resolved</span>
+            <button class="px-4 py-2 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-400 text-sm font-medium rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">View</button>
+          </div>
+        </div>
+        <div class="p-6 hover:bg-primary/5 dark:hover:bg-primary/10 transition-colors flex flex-wrap items-center justify-between gap-4">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary"><span class="material-icons">mic</span></div>
+            <div>
+              <p class="font-bold text-slate-800 dark:text-white">Report #R-2835</p>
+              <p class="text-sm text-slate-500 dark:text-slate-400">Priya M. • Pune • 1 day ago</p>
+              <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Voice query: "Subsidy on seeds and how to apply."</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="px-3 py-1 bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-400 text-xs font-bold rounded-full">Pending</span>
+            <button class="px-4 py-2 bg-primary text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-opacity">Resolve</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script>
+(function() {
+  const isDark = document.documentElement.classList.contains('dark');
+  const grid = isDark ? 'rgba(148,163,184,0.15)' : 'rgba(0,0,0,0.06)';
+  const text = isDark ? '#94a3b8' : '#64748b';
+  const primary = '#0d5c0d';
+
+  new Chart(document.getElementById('reportsTrendChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      datasets: [
+        { label: 'Resolved', data: [12, 18, 14, 16, 20, 12, 12], backgroundColor: primary, borderRadius: 6 },
+        { label: 'Pending', data: [5, 4, 6, 3, 2, 2, 2], backgroundColor: 'rgba(245,158,11,0.8)', borderRadius: 6 }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: text } } },
+      scales: {
+        x: { grid: { color: grid }, ticks: { color: text } },
+        y: { grid: { color: grid }, ticks: { color: text } }
+      }
+    }
+  });
+})();
+  </script>
+</body>
+</html>

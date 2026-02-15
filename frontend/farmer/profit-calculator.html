@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link href="../css/style.css" rel="stylesheet" />
+  <script src="../js/main.js"></script>
+  <script src="../js/language-selector.js"></script>
+  <title>Profit Estimator | KISAN-DRISHTI</title>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark font-display min-h-screen text-slate-800 dark:text-slate-100">
+  <nav
+    class="sticky top-0 z-50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-700/80 px-4 py-3">
+    <div class="max-w-4xl mx-auto flex items-center justify-between flex-wrap gap-2">
+      <a href="../index.html" class="flex items-center gap-2.5 text-slate-800 dark:text-white hover:text-primary transition-colors">
+        <img src="../images/spit%20logo.png" alt="KISAN-DRISHTI" class="h-10 w-10 object-contain flex-shrink-0 rounded-xl" onerror="this.style.display='none'; var n=this.nextElementSibling; if(n) n.classList.remove('hidden');" />
+        <div class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white shadow-md shadow-primary/20 hidden"><span class="material-icons">agriculture</span></div>
+        <span class="text-lg font-bold">KISAN-DRISHTI</span>
+      </a>
+      <div class="flex items-center gap-1.5 flex-wrap">
+        <a href="dashboard.html"
+          class="px-4 py-2 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 text-sm transition-colors">Dashboard</a>
+        <a href="market-prices.html"
+          class="px-4 py-2 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 text-sm transition-colors">Prices</a>
+        <a href="profit-calculator.html"
+          class="px-4 py-2 rounded-xl bg-primary/10 text-primary font-semibold text-sm">My Profit</a>
+        <a href="mandi-locator.html"
+          class="px-4 py-2 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 text-sm transition-colors">Mandi</a>
+        <a href="profile.html"
+          class="px-4 py-2 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 text-sm transition-colors">Profile</a>
+        <div class="lang-dropdown relative ml-auto sm:ml-0" id="lang-dropdown">
+          <button type="button" id="lang-trigger" class="lang-trigger flex items-center gap-1.5 px-3 py-2.5 rounded-xl bg-white/90 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 text-sm font-medium min-h-[44px]" aria-haspopup="listbox" aria-expanded="false">
+            <span class="material-icons text-base">language</span>
+            <span id="lang-current">English</span>
+            <span class="material-icons text-slate-400 text-base">expand_more</span>
+          </button>
+          <div id="lang-panel" class="lang-panel absolute top-full right-0 mt-2 min-w-[160px] py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-xl shadow-lg z-50 hidden" role="listbox">
+            <button type="button" class="lang-option w-full text-left px-4 py-2.5 rounded-lg mx-1.5 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-primary/10 hover:text-primary transition-colors" data-lang="en" role="option">English</button>
+            <button type="button" class="lang-option w-full text-left px-4 py-2.5 rounded-lg mx-1.5 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-primary/10 hover:text-primary transition-colors" data-lang="hi" role="option">हिंदी</button>
+            <button type="button" class="lang-option w-full text-left px-4 py-2.5 rounded-lg mx-1.5 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-primary/10 hover:text-primary transition-colors" data-lang="mr" role="option">मराठी</button>
+          </div>
+        </div>
+        <button onclick="toggleTheme()"
+          class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors mr-1"
+          title="Toggle Theme">
+          <span class="material-icons text-xl">contrast</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+  <main class="max-w-5xl mx-auto px-4 py-12">
+    <header class="mb-10 text-center">
+      <h1 class="text-4xl font-extrabold text-slate-900 dark:text-white mb-2" data-translate="profit.title">Profit Estimator</h1>
+      <p class="text-slate-500 dark:text-slate-400 max-w-lg mx-auto" data-translate="profit.subtitle">Calculate your potential earnings based on the latest regional market trends and real-time crop pricing.</p>
+    </header>
+    <section
+      class="bg-white dark:bg-slate-900/50 rounded-2xl shadow-lg border-2 border-slate-100 dark:border-slate-700/80 overflow-hidden mb-12">
+      <div class="p-8 md:p-12">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+          <div class="space-y-3">
+            <label class="block text-sm font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wider" data-translate="profit.select_crop">Select Crop Type</label>
+            <select id="crop-select" class="w-full bg-background-light dark:bg-slate-800 border-2 border-transparent focus:border-primary focus:ring-0 rounded-lg p-4 text-lg font-medium appearance-none cursor-pointer">
+              <!-- Crops will be populated dynamically -->
+            </select>
+          </div>
+          <div class="space-y-3">
+            <label class="block text-sm font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wider" data-translate="profit.weight">Estimated Weight (quintals)</label>
+            <input id="weight-input" class="w-full bg-background-light dark:bg-slate-800 border-2 border-transparent focus:border-primary focus:ring-0 rounded-lg p-4 text-lg font-medium" placeholder="e.g. 15" type="number" min="0" step="0.1" />
+          </div>
+        </div>
+        <button onclick="calculateProfit()" class="w-full bg-primary hover:bg-primary-hover text-white py-5 rounded-xl text-xl font-bold flex items-center justify-center gap-3 transition-all shadow-lg shadow-primary/25 focus:outline-none focus:ring-4 focus:ring-primary/30">
+          <span class="material-icons">calculate</span><span data-translate="profit.calculate">Calculate My Income</span>
+        </button>
+        <div id="results-section" class="mt-12 pt-10 border-t border-primary/10 text-center hidden">
+          <p class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-2" data-translate="profit.estimated">Estimated Earnings</p>
+          <div class="inline-block px-8 py-4 bg-primary/10 rounded-full mb-4">
+            <h2 id="profit-amount" class="text-6xl md:text-7xl font-black text-primary">₹0</h2>
+          </div>
+          <p id="rate-info" class="text-sm text-slate-600 dark:text-slate-400">Based on today's market rate of <span class="font-bold text-slate-800 dark:text-slate-200">₹0/quintal</span></p>
+          <div id="profit-breakdown" class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- Breakdown will be populated here -->
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div class="lg:col-span-2 bg-white dark:bg-slate-900/50 p-8 rounded-xl border border-primary/10">
+        <h3 class="text-xl font-bold flex items-center gap-2 mb-6"><span class="material-icons text-primary">bar_chart</span><span data-translate="profit.overview">Earnings Overview</span></h3>
+        <div id="earnings-chart" class="flex items-end justify-between h-48 gap-6">
+          <!-- Chart will be populated dynamically -->
+        </div>
+      </div>
+      <div class="bg-white dark:bg-slate-900/50 p-8 rounded-xl border border-primary/10">
+        <h3 class="text-xl font-bold flex items-center gap-2 mb-6"><span class="material-icons text-primary">tips_and_updates</span><span data-translate="profit.suggestions">Smart Suggestions</span></h3>
+        <div id="suggestions" class="space-y-4">
+          <!-- Suggestions will be populated dynamically -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Populate crop dropdown (uses current language)
+    function populateCrops() {
+      const select = document.getElementById('crop-select');
+      if (!select) return;
+      const lang = typeof currentLanguage !== 'undefined' ? currentLanguage : 'en';
+      const currentVal = select.value;
+      select.innerHTML = '';
+      const data = typeof getPriceData === 'function' ? getPriceData() : cropData;
+      Object.entries(data).forEach(([cropKey, cropInfo]) => {
+        const option = document.createElement('option');
+        option.value = cropKey;
+        const name = cropInfo.name && (cropInfo.name[lang] || cropInfo.name.en) ? (cropInfo.name[lang] || cropInfo.name.en) : cropInfo.name.en;
+        option.textContent = name + ' - ₹' + cropInfo.price + '/quintal';
+        select.appendChild(option);
+      });
+      if (currentVal) select.value = currentVal;
+    }
+    
+    // Calculate profit
+    function calculateProfit() {
+      if (typeof incrementStat === 'function') incrementStat('profitChecks');
+      const cropSelect = document.getElementById('crop-select');
+      const weightInput = document.getElementById('weight-input');
+      
+      if (!cropSelect.value || !weightInput.value || weightInput.value <= 0) {
+        alert('Please select a crop and enter a valid weight');
+        return;
+      }
+      
+      const cropKey = cropSelect.value;
+      const weight = parseFloat(weightInput.value);
+      const data = typeof getPriceData === 'function' ? getPriceData() : cropData;
+      const cropInfo = data[cropKey];
+      
+      const totalEarnings = cropInfo.price * weight;
+      const trendMultiplier = cropInfo.trendDirection === 'up' ? 1.05 : 0.98;
+      const adjustedEarnings = totalEarnings * trendMultiplier;
+      
+      // Update results
+      document.getElementById('profit-amount').textContent = `₹${Math.round(adjustedEarnings).toLocaleString('en-IN')}`;
+      document.getElementById('rate-info').innerHTML = `Based on today's market rate of <span class="font-bold text-slate-800 dark:text-slate-200">₹${cropInfo.price}/quintal</span>`;
+      
+      // Update breakdown
+      const breakdown = document.getElementById('profit-breakdown');
+      breakdown.innerHTML = `
+        <div class="text-center p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
+          <p class="text-xs font-bold text-green-700 dark:text-green-400 uppercase">Base Amount</p>
+          <p class="text-2xl font-bold text-green-800 dark:text-green-300">₹${totalEarnings.toLocaleString('en-IN')}</p>
+        </div>
+        <div class="text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+          <p class="text-xs font-bold text-blue-700 dark:text-blue-400 uppercase">Trend Adjustment</p>
+          <p class="text-2xl font-bold text-blue-800 dark:text-blue-300">${cropInfo.trendDirection === 'up' ? '+' : '-'}${Math.abs(Math.round(adjustedEarnings - totalEarnings)).toLocaleString('en-IN')}</p>
+        </div>
+        <div class="text-center p-4 bg-primary/10 rounded-lg">
+          <p class="text-xs font-bold text-primary uppercase">Final Estimate</p>
+          <p class="text-2xl font-bold text-primary">₹${Math.round(adjustedEarnings).toLocaleString('en-IN')}</p>
+        </div>
+      `;
+      
+      // Update suggestions
+      const suggestions = document.getElementById('suggestions');
+      const suggestionText = cropInfo.suggestion === 'sell_today' ? 'Great time to sell! Prices are rising.' :
+                           cropInfo.suggestion.includes('wait') ? `Consider waiting ${cropInfo.suggestion.includes('2') ? '2-3' : '3-4'} days for better prices.` :
+                           'Hold steady. Market is stable.';
+      
+      const lang = typeof currentLanguage !== 'undefined' ? currentLanguage : 'en';
+      const cropName = cropInfo.name && (cropInfo.name[lang] || cropInfo.name.en) ? (cropInfo.name[lang] || cropInfo.name.en) : cropInfo.name.en;
+      suggestions.innerHTML = `
+        <div class="flex items-start gap-3">
+          <span class="material-icons text-primary mt-1">lightbulb</span>
+          <div>
+            <p class="font-semibold text-slate-800 dark:text-slate-200">${cropName} Market Insight</p>
+            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">${suggestionText}</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-3">
+          <span class="material-icons text-amber-500 mt-1">trending_${cropInfo.trendDirection}</span>
+          <div>
+            <p class="font-semibold text-slate-800 dark:text-slate-200">Price Trend</p>
+            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Prices are ${cropInfo.trendDirection === 'up' ? 'increasing' : 'decreasing'} by ${cropInfo.trend} rupees</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-3">
+          <span class="material-icons text-green-500 mt-1">schedule</span>
+          <div>
+            <p class="font-semibold text-slate-800 dark:text-slate-200">Best Time to Sell</p>
+            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Market volatility is ${cropInfo.volatility}</p>
+          </div>
+        </div>
+      `;
+      
+      // Update chart
+      updateChart(cropKey, adjustedEarnings);
+      
+      // Show results
+      document.getElementById('results-section').classList.remove('hidden');
+    }
+    
+    // Update earnings chart
+    function updateChart(currentCrop, currentEarnings) {
+      const chart = document.getElementById('earnings-chart');
+      if (!chart) return;
+      
+      const months = ['Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'];
+      const values = [28000, 32000, 35000, 38000, 42000, currentEarnings];
+      
+      chart.innerHTML = '';
+      
+      months.forEach((month, index) => {
+        const height = (values[index] / Math.max(...values)) * 100;
+        const isCurrent = index === months.length - 1;
+        
+        const bar = document.createElement('div');
+        bar.className = 'flex-1 flex flex-col items-center gap-2';
+        bar.innerHTML = `
+          <div class="w-full ${isCurrent ? 'bg-primary' : 'bg-amber-200 dark:bg-amber-800/40'} rounded-t-lg h-[${height}%] flex items-end justify-center">
+            <span class="text-xs font-bold mb-1">₹${(values[index]/1000).toFixed(0)}k</span>
+          </div>
+          <span class="font-bold text-slate-500 text-sm">${month}</span>
+        `;
+        chart.appendChild(bar);
+      });
+    }
+    
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      populateCrops();
+    });
+    window.addEventListener('languagechange', function() {
+      populateCrops();
+    });
+  </script>
+</body>
+
+</html>
+            <div class="w-full bg-primary/40 rounded-t-lg h-[85%] flex items-end justify-center"><span
+                class="text-xs font-bold mb-1">₹38k</span></div>
+            <span class="font-bold text-slate-500 text-sm">Nov</span>
+          </div>
+          <div class="flex-1 flex flex-col items-center gap-2">
+            <div class="w-full bg-primary rounded-t-lg h-full flex items-end justify-center"><span
+                class="text-xs font-bold mb-1 text-white">₹45k</span></div>
+            <span class="font-bold text-primary text-sm">Dec (Est.)</span>
+          </div>
+        </div>
+      </div>
+      <div class="space-y-6">
+        <div class="bg-primary text-white p-6 rounded-xl shadow-lg">
+          <span class="material-icons text-3xl mb-3">trending_up</span>
+          <h4 class="text-lg font-bold mb-2">Market Alert</h4>
+          <p class="text-sm text-white/90">Wheat prices have risen by 12% in your district. It might be the ideal time
+            to sell your stock.</p>
+        </div>
+        <div class="bg-white dark:bg-slate-900/50 p-6 rounded-xl border border-primary/10">
+          <h4 class="font-bold text-slate-700 dark:text-slate-200 mb-4 flex items-center gap-2"><span
+              class="material-icons text-primary text-sm">local_offer</span>Top Rates Nearby</h4>
+          <ul class="space-y-4">
+            <li class="flex justify-between text-sm"><span class="text-slate-500">Mandi ABC</span><span
+                class="font-bold text-primary">₹32.5/kg</span></li>
+            <li class="flex justify-between text-sm"><span class="text-slate-500">Kisan Center</span><span
+                class="font-bold text-primary">₹31.0/kg</span></li>
+            <li class="flex justify-between text-sm"><span class="text-slate-500">Direct Govt</span><span
+                class="font-bold text-primary">₹29.8/kg</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+
+</html>
